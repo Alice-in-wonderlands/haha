@@ -23,30 +23,28 @@
       100% { transform: translateY(-20vh) rotate(360deg); opacity:0; }
     }
 
-    /* ---------- Lyrics scrolling vertically (visible + mờ nền) ---------- */
+    /* ---------- Lyrics scrolling vertically ---------- */
     .lyrics-vertical {
       position: fixed;
-      bottom: -100%;
+      bottom: -50%; /* bắt đầu dưới màn hình */
       left: 50%;
       transform: translateX(-50%);
       width: 80%;
-      text-align: center;
+      text-align: center; /* căn giữa chữ */
       font-size: 28px;
-      font-weight: 600;
-      color: rgba(255, 107, 154, 0.35); /* mờ nhưng nhìn thấy */
+      font-weight: 700;
+      color: rgba(255, 107, 154, 0.5); /* mờ nền */
       pointer-events: none;
-      z-index:1; /* dưới card nhưng trên background */
+      z-index: 1; /* phía sau card */
     }
 
     @keyframes scrollVertical {
-      0% { transform: translateX(-50%) translateY(100%); opacity: 0; }
-      30% { opacity: 1; }
-      70% { opacity: 1; }
-      100% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+      0% { transform: translateX(-50%) translateY(100%); }
+      100% { transform: translateX(-50%) translateY(-100%); }
     }
 
     .lyrics-vertical p {
-      animation: scrollVertical 5s linear infinite;
+      animation: scrollVertical 20s linear infinite; /* chạy nhanh, lặp vô hạn */
       line-height: 2em;
     }
 
@@ -91,22 +89,7 @@
       Happy Birthday, Uncle Will,<br>
       Another year older, still busy still.<br>
       Happy one more step towards retirement,<br>
-      We’ll drink to your “time zone enlightenment.”<br><br>
-
-      Your wisdom’s “priceless,” or so you say,<br>
-      But your dad jokes could ruin anyone’s day.<br>
-      Spreadsheets dancing, tutors in a tizzy,<br>
-      You call it “strategy,” we call it dizzy.<br><br>
-
-      International Tutor Group’s your baby, it’s true,<br>
-      But it cries every morning — and so do we too.<br>
-      Two-hour meetings you call “a quick chat,”<br>
-      By the end we’re all wondering who asked for that.<br><br>
-
-      Happy Birthday, Uncle Will,<br>
-      Forty-seven, mate, that’s over the hill.<br>
-      International’s booming, but don’t be defiant,<br>
-      Happy one more year closer to retirement.
+      We’ll drink to your “time zone enlightenment.”
     </p>
   </div>
 
@@ -243,5 +226,3 @@
   </script>
 </body>
 </html>
-
-

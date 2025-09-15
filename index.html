@@ -23,7 +23,7 @@
       100% { transform: translateY(-20vh) rotate(360deg); opacity:0; }
     }
 
-    /* ---------- Lyrics scrolling vertically ---------- */
+    /* ---------- Lyrics scrolling vertically (visible + mờ nền) ---------- */
     .lyrics-vertical {
       position: fixed;
       bottom: -100%;
@@ -31,11 +31,11 @@
       transform: translateX(-50%);
       width: 80%;
       text-align: center;
-      font-size: 22px;
+      font-size: 28px;
       font-weight: 600;
-      color: rgba(255, 107, 154, 0.15);
+      color: rgba(255, 107, 154, 0.35); /* mờ nhưng nhìn thấy */
       pointer-events: none;
-      z-index: 0;
+      z-index:1; /* dưới card nhưng trên background */
     }
 
     @keyframes scrollVertical {
@@ -46,7 +46,7 @@
     }
 
     .lyrics-vertical p {
-      animation: scrollVertical 120s linear infinite;
+      animation: scrollVertical 60s linear infinite;
       line-height: 2em;
     }
 
@@ -75,7 +75,7 @@
   <!-- Floating emojis -->
   <div class="icons" id="icons"></div>
 
-  <!-- Lyrics scrolling -->
+  <!-- Lyrics scrolling vertically -->
   <div class="lyrics-vertical" id="lyrics-vertical">
     <p>
       International Tutor Group’s your baby, it’s true,<br>

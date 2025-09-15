@@ -6,7 +6,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     :root{ --card-width:720px; --accent:#ff6b9a; }
-    html,body{ height:100%; margin:0; font-family: "Segoe UI", sans-serif; background: linear-gradient(135deg,#fff6f9 0%, #f0f9ff 100%); overflow:hidden; }
+
+    html,body{
+      height:100%; margin:0; font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg,#fff6f9 0%, #f0f9ff 100%);
+      overflow:hidden;
+    }
+
+    /* ---------- Floating emojis ---------- */
     .icons{ position:fixed; inset:0; pointer-events:none; z-index:0; }
     .floating-icon{ position:absolute; font-size:28px; opacity:0.9; }
     @keyframes floatUp {
@@ -16,6 +23,34 @@
       100% { transform: translateY(-20vh) rotate(360deg); opacity:0; }
     }
 
+    /* ---------- Lyrics scrolling vertically ---------- */
+    .lyrics-vertical {
+      position: fixed;
+      bottom: -100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      color: rgba(255, 107, 154, 0.15);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes scrollVertical {
+      0% { transform: translateX(-50%) translateY(100%); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+    }
+
+    .lyrics-vertical p {
+      animation: scrollVertical 120s linear infinite;
+      line-height: 2em;
+    }
+
+    /* ---------- Center card ---------- */
     .center { position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
     .card { width:100%; max-width:var(--card-width); background: rgba(255,255,255,0.9); border-radius:20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); padding:28px; display:flex; gap:22px; align-items:center; flex-wrap:wrap; }
     .left { flex:1; text-align:left; }
@@ -37,8 +72,45 @@
 </head>
 <body>
 
+  <!-- Floating emojis -->
   <div class="icons" id="icons"></div>
 
+  <!-- Lyrics scrolling -->
+  <div class="lyrics-vertical" id="lyrics-vertical">
+    <p>
+      International Tutor Group’s your baby, it’s true,<br>
+      But it cries every morning — and so do we too.<br>
+      Forty-seven candles, the number’s a fright,<br>
+      And you still think spreadsheets are a Friday night.<br><br>
+
+      You’re the governor, the boss,<br>
+      Emails flying, deadlines cross.<br>
+      But where’s the cake, Will?<br>
+      All we got’s your chaos.<br><br>
+
+      Happy Birthday, Uncle Will,<br>
+      Another year older, still busy still.<br>
+      Happy one more step towards retirement,<br>
+      We’ll drink to your “time zone enlightenment.”<br><br>
+
+      Your wisdom’s “priceless,” or so you say,<br>
+      But your dad jokes could ruin anyone’s day.<br>
+      Spreadsheets dancing, tutors in a tizzy,<br>
+      You call it “strategy,” we call it dizzy.<br><br>
+
+      International Tutor Group’s your baby, it’s true,<br>
+      But it cries every morning — and so do we too.<br>
+      Two-hour meetings you call “a quick chat,”<br>
+      By the end we’re all wondering who asked for that.<br><br>
+
+      Happy Birthday, Uncle Will,<br>
+      Forty-seven, mate, that’s over the hill.<br>
+      International’s booming, but don’t be defiant,<br>
+      Happy one more year closer to retirement.
+    </p>
+  </div>
+
+  <!-- Center card -->
   <div class="center">
     <div class="card" role="main">
       <div class="left">
@@ -92,7 +164,6 @@
     const icons = ['🎈','🎉','🎂','🎁','🍰','✨','🎊','🥳','🌟','💖'];
     const count = 25;
     const rand = (min,max) => Math.random()*(max-min)+min;
-  
     for (let i=0; i<count; i++) {
       const el = document.createElement("div");
       el.className = "floating-icon";
@@ -104,13 +175,7 @@
     }
 
     // ---------- slideshow ----------
-    const slides = [
-      'WILL3.jpg',
-      'WILL2.jpg',
-      'WILL1.jpg',
-      'WILL4.jpg'
-    ];
-
+    const slides = ['WILL3.jpg','WILL2.jpg','WILL1.jpg','WILL4.jpg'];
     const preloaded = [];
     slides.forEach(src => { const im = new Image(); im.src = src; preloaded.push(im); });
 
@@ -143,7 +208,6 @@
       showingA = !showingA;
       index = nextIndex;
     }
-
     setInterval(showNext, 3000);
 
     // ---------- buttons ----------
@@ -156,12 +220,10 @@
         audio.currentTime = 0;
       }
     });
-
     document.getElementById('toggleBtn').addEventListener('click', () => {
       const s = document.getElementById('surprise');
       s.style.display = s.style.display === 'none' ? 'block' : 'none';
     });
-
     document.getElementById('bigWishBtn').addEventListener('click', () => {
       document.getElementById('bigWish').style.display = 'flex';
     });
@@ -172,6 +234,10 @@
       document.querySelectorAll('.floating-icon').forEach(el => {
         el.style.animation = 'none';
         el.style.opacity = 0.9;
+      });
+      document.querySelectorAll('.lyrics-vertical p').forEach(el => {
+        el.style.animation = 'none';
+        el.style.opacity = 1;
       });
     }
   </script>

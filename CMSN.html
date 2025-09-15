@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Happy Birthday, Will!!</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{ --card-width:720px; --accent:#ff6b9a; }
+    html,body{ height:100%; margin:0; font-family: "Segoe UI", sans-serif; background: linear-gradient(135deg,#fff6f9 0%, #f0f9ff 100%); overflow:hidden; }
+    .icons{ position:fixed; inset:0; pointer-events:none; z-index:0; }
+    .floating-icon{ position:absolute; font-size:28px; opacity:0.9; }
+    @keyframes floatUp {
+      0% { transform: translateY(110vh) rotate(0deg); opacity:0; }
+      10% { opacity:1; }
+      50% { transform: translateY(50vh) rotate(180deg); }
+      100% { transform: translateY(-20vh) rotate(360deg); opacity:0; }
+    }
+
+    .center { position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+    .card { width:100%; max-width:var(--card-width); background: rgba(255,255,255,0.9); border-radius:20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); padding:28px; display:flex; gap:22px; align-items:center; flex-wrap:wrap; }
+    .left { flex:1; text-align:left; }
+    .title { font-size:32px; margin:0 0 8px 0; color:#222; }
+    .subtitle { margin:0 0 18px 0; color:#555; font-size:16px; }
+
+    .image-wrap { flex:0 0 300px; display:flex; align-items:center; justify-content:center; }
+    .slideshow { width:280px; height:280px; border-radius:18px; overflow:hidden; position:relative; box-shadow: 0 14px 40px rgba(0,0,0,0.08); border:6px solid rgba(255,255,255,0.6); background: linear-gradient(135deg,#fff,#f8f8ff); }
+    .slide { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition: opacity 800ms ease; opacity:0; border-radius:12px; }
+    .slide.show { opacity:1; z-index:2; }
+
+    @media (max-width:800px){ .left{ flex:1 1 100%; text-align:center; } .image-wrap{ flex:1 1 100%; } .title{ font-size:26px; } }
+
+    /* small control buttons */
+    .btns { display:flex; gap:10px; margin-top:6px; }
+    .btn { background:var(--accent); color:#fff; border:none; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; }
+    .btn.secondary { background:transparent; color:var(--accent); border:2px solid rgba(255,107,154,0.15); }
+  </style>
+</head>
+<body>
+
+  <div class="icons" id="icons"></div>
+
+  <div class="center">
+    <div class="card" role="main">
+      <div class="left">
+        <h1 id="title" class="title">Congratulations on being born a really long time ago!!<span class="heart">💖</span></h1>
+        <p class="subtitle">Wishing you a day filled with laughter, cake, and unforgettable moments. Hope your year ahead sparkles!🥳</p>
+
+        <div class="btns">
+          <button class="btn" id="playBtn">Play Song</button>
+          <button class="btn secondary" id="toggleBtn">Toggle Surprise</button>
+        </div>
+        <p id="surprise" style="margin-top:12px; display:none;">🎉 Surprise: You get an extra slice of cake today. Make a wish! 🕯️</p>
+      </div>
+
+      <div class="image-wrap">
+        <div class="slideshow" id="slideshow">
+          <img id="slideA" class="slide" src="" alt="slide A">
+          <img id="slideB" class="slide" src="" alt="slide B">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- optional audio (user must click to play in many browsers) -->
+  <audio id="bdayAudio" preload="none">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // ---------- floating emoji ----------
+    const container = document.getElementById("icons");
+    const icons = ['🎈','🎉','🎂','🎁','🍰','✨','🎊','🥳','🌟','😈'];
+    const count = 25;
+    const rand = (min,max) => Math.random()*(max-min)+min;
+  
+    for (let i=0; i<count; i++) {
+      const el = document.createElement("div");
+      el.className = "floating-icon";
+      el.textContent = icons[Math.floor(Math.random()*icons.length)];
+      el.style.left = rand(0,95)+"%";
+      el.style.fontSize = rand(20,40)+"px";
+      el.style.animation = `floatUp ${rand(8,18)}s linear ${rand(-5,5)}s infinite`;
+      container.appendChild(el);
+    }
+
+    // ---------- slideshow with crossfade ----------
+    const slides = [
+      'WILL3.jpg',
+      'WILL2.jpg',
+      'WILL1.jpg',
+      'WILL4.jpg'
+    ];
+
+    // preload images
+    const preloaded = [];
+    slides.forEach(src => { const im = new Image(); im.src = src; preloaded.push(im); });
+
+    const a = document.getElementById('slideA');
+    const b = document.getElementById('slideB');
+    let showingA = true;
+    let index = 0;
+
+    // init
+    if (slides.length === 0) {
+      a.src = ''; b.src = '';
+    } else if (slides.length === 1) {
+      a.src = slides[0]; a.classList.add('show');
+    } else {
+      a.src = slides[0]; a.classList.add('show');
+      b.src = slides[1];
+      index = 1;
+    }
+
+    function showNext(){
+      if (slides.length <= 1) return;
+      const nextIndex = (index + 1) % slides.length;
+      const front = showingA ? b : a;   // will bring to front
+      const back  = showingA ? a : b;   // will go to back
+
+      // set new src and wait for it to load to avoid blank flash
+      front.onload = () => {
+        front.classList.add('show');
+        back.classList.remove('show');
+        front.onload = null;
+      };
+      front.src = slides[nextIndex];
+
+      showingA = !showingA;
+      index = nextIndex;
+    }
+
+    // start auto-change every 3s (first change after 3s)
+    setInterval(showNext, 3000);
+
+    // ---------- buttons ----------
+    const audio = document.getElementById('bdayAudio');
+    document.getElementById('playBtn').addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play().catch(()=>alert('Autoplay blocked — click again to play.'));
+      } else {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    });
+
+    document.getElementById('toggleBtn').addEventListener('click', () => {
+      const s = document.getElementById('surprise');
+      s.style.display = s.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // respect reduced-motion preference
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq.matches) {
+      document.querySelectorAll('.floating-icon').forEach(el => {
+        el.style.animation = 'none';
+        el.style.opacity = 0.9;
+      });
+    }
+  </script>
+</body>
+</html>

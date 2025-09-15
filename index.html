@@ -30,7 +30,7 @@
     @media (max-width:800px){ .left{ flex:1 1 100%; text-align:center; } .image-wrap{ flex:1 1 100%; } .title{ font-size:26px; } }
 
     /* small control buttons */
-    .btns { display:flex; gap:10px; margin-top:6px; }
+    .btns { display:flex; gap:10px; margin-top:6px; flex-wrap:wrap; }
     .btn { background:var(--accent); color:#fff; border:none; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; }
     .btn.secondary { background:transparent; color:var(--accent); border:2px solid rgba(255,107,154,0.15); }
   </style>
@@ -48,6 +48,7 @@
         <div class="btns">
           <button class="btn" id="playBtn">Play Song</button>
           <button class="btn secondary" id="toggleBtn">Toggle Surprise</button>
+          <button class="btn" id="bigWishBtn">Big Wish</button>
         </div>
         <p id="surprise" style="margin-top:12px; display:none;">🎉 Surprise: You get an extra slice of cake today. Make a wish! 🕯️</p>
       </div>
@@ -61,15 +62,34 @@
     </div>
   </div>
 
-  <!-- optional audio (user must click to play in many browsers) -->
-  <audio id="bdayAudio" preload="none">
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  <!-- audio -->
+  <audio id="bdayAudio" loop>
+    <source src="WILL.m4a" type="audio/x-m4a">
+    <source src="WILL.m4a" type="audio/mp4">
+    Your browser does not support the audio element.
   </audio>
+
+  <!-- big wish popup -->
+  <div id="bigWish" 
+       style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+              display:flex; align-items:center; justify-content:center; z-index:999;">
+    <div style="background:white; padding:40px; border-radius:20px; max-width:800px; text-align:center;">
+      <h1 style="font-size:48px; color:#ff4081; margin:0;">🎂🎉 HAPPY BIRTHDAY WILLIAM 🎉🎂</h1>
+      <p style="font-size:24px; color:#333; margin-top:20px;">
+        Wishing you endless joy, laughter, and unforgettable moments.<br>
+        May this year be your brightest and happiest yet! 🌟💖
+      </p>
+      <button onclick="document.getElementById('bigWish').style.display='none'" 
+              style="margin-top:20px; padding:10px 20px; font-size:18px; border:none; border-radius:12px; background:#ff6b9a; color:white; cursor:pointer;">
+        Close
+      </button>
+    </div>
+  </div>
 
   <script>
     // ---------- floating emoji ----------
     const container = document.getElementById("icons");
-    const icons = ['🎈','🎉','🎂','🎁','🍰','✨','🎊','🥳','🌟','😈'];
+    const icons = ['🎈','🎉','🎂','🎁','🍰','✨','🎊','🥳','🌟','💖'];
     const count = 25;
     const rand = (min,max) => Math.random()*(max-min)+min;
   
@@ -83,7 +103,7 @@
       container.appendChild(el);
     }
 
-    // ---------- slideshow with crossfade ----------
+    // ---------- slideshow ----------
     const slides = [
       'WILL3.jpg',
       'WILL2.jpg',
@@ -91,7 +111,6 @@
       'WILL4.jpg'
     ];
 
-    // preload images
     const preloaded = [];
     slides.forEach(src => { const im = new Image(); im.src = src; preloaded.push(im); });
 
@@ -100,10 +119,7 @@
     let showingA = true;
     let index = 0;
 
-    // init
-    if (slides.length === 0) {
-      a.src = ''; b.src = '';
-    } else if (slides.length === 1) {
+    if (slides.length === 1) {
       a.src = slides[0]; a.classList.add('show');
     } else {
       a.src = slides[0]; a.classList.add('show');
@@ -114,10 +130,9 @@
     function showNext(){
       if (slides.length <= 1) return;
       const nextIndex = (index + 1) % slides.length;
-      const front = showingA ? b : a;   // will bring to front
-      const back  = showingA ? a : b;   // will go to back
+      const front = showingA ? b : a;
+      const back  = showingA ? a : b;
 
-      // set new src and wait for it to load to avoid blank flash
       front.onload = () => {
         front.classList.add('show');
         back.classList.remove('show');
@@ -129,14 +144,13 @@
       index = nextIndex;
     }
 
-    // start auto-change every 3s (first change after 3s)
     setInterval(showNext, 3000);
 
     // ---------- buttons ----------
     const audio = document.getElementById('bdayAudio');
     document.getElementById('playBtn').addEventListener('click', () => {
       if (audio.paused) {
-        audio.play().catch(()=>alert('Autoplay blocked — click again to play.'));
+        audio.play().catch(()=>alert('Autoplay blocked — click Play again.'));
       } else {
         audio.pause();
         audio.currentTime = 0;
@@ -148,7 +162,11 @@
       s.style.display = s.style.display === 'none' ? 'block' : 'none';
     });
 
-    // respect reduced-motion preference
+    document.getElementById('bigWishBtn').addEventListener('click', () => {
+      document.getElementById('bigWish').style.display = 'flex';
+    });
+
+    // reduced motion
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (mq.matches) {
       document.querySelectorAll('.floating-icon').forEach(el => {

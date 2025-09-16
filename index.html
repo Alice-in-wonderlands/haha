@@ -6,14 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     :root{ --card-width:720px; --accent:#ff6b9a; }
-
-    html,body{
-      height:100%; margin:0; font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(135deg,#fff6f9 0%, #f0f9ff 100%);
-      overflow:hidden;
-    }
-
-    /* ---------- Floating emojis ---------- */
+    html,body{ height:100%; margin:0; font-family: "Segoe UI", sans-serif; background: linear-gradient(135deg,#fff6f9 0%, #f0f9ff 100%); overflow:hidden; }
     .icons{ position:fixed; inset:0; pointer-events:none; z-index:0; }
     .floating-icon{ position:absolute; font-size:28px; opacity:0.9; }
     @keyframes floatUp {
@@ -23,32 +16,6 @@
       100% { transform: translateY(-20vh) rotate(360deg); opacity:0; }
     }
 
-    /* ---------- Lyrics scrolling vertically ---------- */
-    .lyrics-vertical {
-      position: fixed;
-      bottom: -50%; /* bắt đầu dưới màn hình */
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
-      text-align: center; /* căn giữa chữ */
-      font-size: 28px;
-      font-weight: 700;
-      color: rgba(255, 107, 154, 0.5); /* mờ nền */
-      pointer-events: none;
-      z-index: 1; /* phía sau card */
-    }
-
-    @keyframes scrollVertical {
-      0% { transform: translateX(-50%) translateY(100%); }
-      100% { transform: translateX(-50%) translateY(-100%); }
-    }
-
-    .lyrics-vertical p {
-      animation: scrollVertical 35s linear infinite; /* chạy nhanh, lặp vô hạn */
-      line-height: 2em;
-    }
-
-    /* ---------- Center card ---------- */
     .center { position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
     .card { width:100%; max-width:var(--card-width); background: rgba(255,255,255,0.9); border-radius:20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); padding:28px; display:flex; gap:22px; align-items:center; flex-wrap:wrap; }
     .left { flex:1; text-align:left; }
@@ -70,30 +37,8 @@
 </head>
 <body>
 
-  <!-- Floating emojis -->
   <div class="icons" id="icons"></div>
 
-  <!-- Lyrics scrolling vertically -->
-  <div class="lyrics-vertical" id="lyrics-vertical">
-    <p>
-      International Tutor Group’s your baby, it’s true,<br>
-      But it cries every morning — and so do we too.<br>
-      Forty-seven candles, the number’s a fright,<br>
-      And you still think spreadsheets are a Friday night.<br><br>
-
-      You’re the governor, the boss,<br>
-      Emails flying, deadlines cross.<br>
-      But where’s the cake, Will?<br>
-      All we got’s your chaos.<br><br>
-
-      Happy Birthday, Uncle Will,<br>
-      Another year older, still busy still.<br>
-      Happy one more step towards retirement,<br>
-      We’ll drink to your “time zone enlightenment.”
-    </p>
-  </div>
-
-  <!-- Center card -->
   <div class="center">
     <div class="card" role="main">
       <div class="left">
@@ -104,6 +49,7 @@
           <button class="btn" id="playBtn">Play Song</button>
           <button class="btn secondary" id="toggleBtn">Toggle Surprise</button>
           <button class="btn" id="bigWishBtn">Big Wish</button>
+          <button class="btn secondary" id="lyricsBtn">Lyrics</button>
         </div>
         <p id="surprise" style="margin-top:12px; display:none;">🎉 Surprise: You get an extra slice of cake today. Make a wish! 🕯️</p>
       </div>
@@ -141,12 +87,32 @@
     </div>
   </div>
 
+  <!-- lyrics popup -->
+  <div id="lyricsPopup" 
+       style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+              display:flex; align-items:center; justify-content:center; z-index:999;">
+    <div style="background:white; padding:30px; border-radius:20px; max-width:600px; text-align:center;">
+      <h2 style="font-size:32px; color:#ff4081; margin:0 0 20px;">🎶 Lyrics 🎶</h2>
+      <p style="font-size:20px; line-height:1.6; color:#333; white-space:pre-line;">
+Happy birthday to you 🎂
+Happy birthday to you 🎉
+Happy birthday dear William 💖
+Happy birthday to you 🥳
+      </p>
+      <button onclick="document.getElementById('lyricsPopup').style.display='none'" 
+              style="margin-top:20px; padding:10px 20px; font-size:18px; border:none; border-radius:12px; background:#ff6b9a; color:white; cursor:pointer;">
+        Close
+      </button>
+    </div>
+  </div>
+
   <script>
     // ---------- floating emoji ----------
     const container = document.getElementById("icons");
     const icons = ['🎈','🎉','🎂','🎁','🍰','✨','🎊','🥳','🌟','💖'];
     const count = 25;
     const rand = (min,max) => Math.random()*(max-min)+min;
+  
     for (let i=0; i<count; i++) {
       const el = document.createElement("div");
       el.className = "floating-icon";
@@ -158,7 +124,13 @@
     }
 
     // ---------- slideshow ----------
-    const slides = ['WILL3.jpg','WILL2.jpg','WILL1.jpg','WILL4.jpg'];
+    const slides = [
+      'WILL3.jpg',
+      'WILL2.jpg',
+      'WILL1.jpg',
+      'WILL4.jpg'
+    ];
+
     const preloaded = [];
     slides.forEach(src => { const im = new Image(); im.src = src; preloaded.push(im); });
 
@@ -191,6 +163,7 @@
       showingA = !showingA;
       index = nextIndex;
     }
+
     setInterval(showNext, 3000);
 
     // ---------- buttons ----------
@@ -203,12 +176,18 @@
         audio.currentTime = 0;
       }
     });
+
     document.getElementById('toggleBtn').addEventListener('click', () => {
       const s = document.getElementById('surprise');
       s.style.display = s.style.display === 'none' ? 'block' : 'none';
     });
+
     document.getElementById('bigWishBtn').addEventListener('click', () => {
       document.getElementById('bigWish').style.display = 'flex';
+    });
+
+    document.getElementById('lyricsBtn').addEventListener('click', () => {
+      document.getElementById('lyricsPopup').style.display = 'flex';
     });
 
     // reduced motion
@@ -218,12 +197,7 @@
         el.style.animation = 'none';
         el.style.opacity = 0.9;
       });
-      document.querySelectorAll('.lyrics-vertical p').forEach(el => {
-        el.style.animation = 'none';
-        el.style.opacity = 1;
-      });
     }
   </script>
 </body>
 </html>
-

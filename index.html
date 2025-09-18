@@ -33,6 +33,15 @@
     .btns { display:flex; gap:10px; margin-top:6px; flex-wrap:wrap; }
     .btn { background:var(--accent); color:#fff; border:none; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; }
     .btn.secondary { background:transparent; color:var(--accent); border:2px solid rgba(255,107,154,0.15); }
+
+    /* popup base */
+    .popup { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:999; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+    .popup-content { background:white; padding:30px; border-radius:20px; max-width:700px; max-height:80vh; overflow-y:auto; text-align:center; }
+    .popup-content h1, .popup-content h2 { margin:0 0 20px; color:#ff4081; }
+    .popup-content p { font-size:18px; line-height:1.6; color:#333; white-space:pre-line; text-align:left; }
+    .close-btn { margin-top:20px; padding:10px 20px; font-size:18px; border:none; border-radius:12px; background:#ff6b9a; color:white; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -71,144 +80,60 @@
   </audio>
 
   <!-- big wish popup -->
-  <div id="bigWish" 
-       style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
-              display:flex; align-items:center; justify-content:center; z-index:999;">
-    <div style="background:white; padding:40px; border-radius:20px; max-width:800px; text-align:center;">
-      <h1 style="font-size:48px; color:#ff4081; margin:0;">🎂🎉 HAPPY BIRTHDAY WILLIAM 🎉🎂</h1>
-      <p style="font-size:24px; color:#333; margin-top:20px;">
+  <div id="bigWish" class="popup">
+    <div class="popup-content">
+      <h1 style="font-size:48px;">🎂🎉 HAPPY BIRTHDAY WILLIAM 🎉🎂</h1>
+      <p style="font-size:24px; text-align:center;">
         Wishing you endless joy, laughter, and unforgettable moments.<br>
         May this year be your brightest and happiest yet! 🌟💖
       </p>
-      <button onclick="document.getElementById('bigWish').style.display='none'" 
-              style="margin-top:20px; padding:10px 20px; font-size:18px; border:none; border-radius:12px; background:#ff6b9a; color:white; cursor:pointer;">
-        Close
-      </button>
+      <button class="close-btn" onclick="document.getElementById('bigWish').style.display='none'">Close</button>
     </div>
   </div>
 
   <!-- lyrics popup -->
-  <div id="lyricsPopup" 
-       style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
-              display:flex; align-items:center; justify-content:center; z-index:999;">
-    <div style="background:white; padding:30px; border-radius:20px; max-width:600px; text-align:center;">
-      <h2 style="font-size:32px; color:#ff4081; margin:0 0 20px;">🎶 Lyrics 🎶</h2>
-      <p style="font-size:20px; line-height:1.6; color:#333; white-space:pre-line;">
-International Tutor Group’s your baby, it’s true, 
-But it cries every morning — and so do we too. 
-Forty-seven candles, the number’s a fright, 
+  <div id="lyricsPopup" class="popup">
+    <div class="popup-content">
+      <h2 style="font-size:32px;">🎶 Birthday Song 🎶</h2>
+      <p>
+International Tutor Group’s your baby, it’s true,
+But it cries every morning — and so do we too.
+Forty-seven candles, the number’s a fright,
 And you still think spreadsheets are a Friday night.
 
-You’re the governor, the boss, 
+[Prechorus]
+You’re the governor, the boss,
 Emails flying, deadlines cross.
-But where’s the cake, Will? 
-All we got’s your chaos.
+But where’s the cake, Will? All we got’s your chaos.
 
-Happy Birthday, Uncle Will, 
-Another year older, still busy still. 
-Happy one more step towards retirement, 
-We’ll drink to your “time zone enlightenment.
-        
+[Chorus]
+Happy Birthday, Uncle Will,
+Another year older, still busy still.
+Happy one more step towards retirement,
+We’ll drink to your “time zone enlightenment.”
+
+[Verse 2]
+Your wisdom’s “priceless,” or so you say,
+But your dad jokes could ruin anyone’s day.
+Spreadsheets dancing, tutors in a tizzy,
+You call it “strategy,” we call it dizzy.
+
+[Prechorus 2]
+International Tutor Group’s your baby, it’s true,
+But it cries every morning — and so do we too.
+Two-hour meetings you call “a quick chat,”
+By the end we’re all wondering who asked for that.
+
+[Chorus]
+Happy Birthday, Uncle Will,
+Forty-seven, mate, that’s over the hill.
+International’s booming, but don’t be defiant,
+Happy one more year closer to retirement.
       </p>
-      <button onclick="document.getElementById('lyricsPopup').style.display='none'" 
-              style="margin-top:20px; padding:10px 20px; font-size:18px; border:none; border-radius:12px; background:#ff6b9a; color:white; cursor:pointer;">
-        Close
-      </button>
+      <button class="close-btn" onclick="document.getElementById('lyricsPopup').style.display='none'">Close</button>
     </div>
   </div>
 
   <script>
-    // ---------- floating emoji ----------
-    const container = document.getElementById("icons");
-    const icons = ['🎈','🎉','🎂','🎁','🍰','✨','🎊','🥳','🌟','💖'];
-    const count = 25;
-    const rand = (min,max) => Math.random()*(max-min)+min;
-  
-    for (let i=0; i<count; i++) {
-      const el = document.createElement("div");
-      el.className = "floating-icon";
-      el.textContent = icons[Math.floor(Math.random()*icons.length)];
-      el.style.left = rand(0,95)+"%";
-      el.style.fontSize = rand(20,40)+"px";
-      el.style.animation = `floatUp ${rand(8,18)}s linear ${rand(-5,5)}s infinite`;
-      container.appendChild(el);
-    }
-
-    // ---------- slideshow ----------
-    const slides = [
-      'WILL3.jpg',
-      'WILL2.jpg',
-      'WILL1.jpg',
-      'WILL4.jpg'
-    ];
-
-    const preloaded = [];
-    slides.forEach(src => { const im = new Image(); im.src = src; preloaded.push(im); });
-
-    const a = document.getElementById('slideA');
-    const b = document.getElementById('slideB');
-    let showingA = true;
-    let index = 0;
-
-    if (slides.length === 1) {
-      a.src = slides[0]; a.classList.add('show');
-    } else {
-      a.src = slides[0]; a.classList.add('show');
-      b.src = slides[1];
-      index = 1;
-    }
-
-    function showNext(){
-      if (slides.length <= 1) return;
-      const nextIndex = (index + 1) % slides.length;
-      const front = showingA ? b : a;
-      const back  = showingA ? a : b;
-
-      front.onload = () => {
-        front.classList.add('show');
-        back.classList.remove('show');
-        front.onload = null;
-      };
-      front.src = slides[nextIndex];
-
-      showingA = !showingA;
-      index = nextIndex;
-    }
-
-    setInterval(showNext, 3000);
-
-    // ---------- buttons ----------
-    const audio = document.getElementById('bdayAudio');
-    document.getElementById('playBtn').addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play().catch(()=>alert('Autoplay blocked — click Play again.'));
-      } else {
-        audio.pause();
-        audio.currentTime = 0;
-      }
-    });
-
-    document.getElementById('toggleBtn').addEventListener('click', () => {
-      const s = document.getElementById('surprise');
-      s.style.display = s.style.display === 'none' ? 'block' : 'none';
-    });
-
-    document.getElementById('bigWishBtn').addEventListener('click', () => {
-      document.getElementById('bigWish').style.display = 'flex';
-    });
-
-    document.getElementById('lyricsBtn').addEventListener('click', () => {
-      document.getElementById('lyricsPopup').style.display = 'flex';
-    });
-
-    // reduced motion
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mq.matches) {
-      document.querySelectorAll('.floating-icon').forEach(el => {
-        el.style.animation = 'none';
-        el.style.opacity = 0.9;
-      });
-    }
-  </script>
-</body>
-</html>
+    // floating emoji
+    const contai
